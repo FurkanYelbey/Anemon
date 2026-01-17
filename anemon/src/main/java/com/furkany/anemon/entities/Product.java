@@ -18,7 +18,7 @@ import java.util.UUID;
 @Builder
 public class Product {
 
-    @Column
+    @Id
     @GeneratedValue
     private UUID id;
 
@@ -52,6 +52,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "categoryType_id",nullable = false)
     private CategoryType categoryType;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Resources> resources;
 
     @PrePersist
     protected void onCreate() {

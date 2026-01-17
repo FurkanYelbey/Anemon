@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,15 +12,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductDto {
+public class CategoryDto {
 
     private UUID id;
     private String name;
+    private String code;
     private String description;
-    private BigDecimal price;
-    private boolean isNewArrival;
-    private UUID categoryId;
-    private UUID categoryTypeId;
-    private List<ProductVariantDto> variants;
-    private List<ProductResourceDto> productResources;
+    private List<CategoryTypeDto> categoryTypeList;
 }
