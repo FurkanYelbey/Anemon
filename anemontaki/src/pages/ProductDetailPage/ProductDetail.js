@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useLoaderData, useParams } from 'react-router-dom'
+import { useLoaderData } from 'react-router-dom'
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import content from '../../data/content.json';
 import Rating from '../../components/Rating/Rating';
