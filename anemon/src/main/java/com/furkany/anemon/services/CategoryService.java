@@ -4,10 +4,12 @@ import com.furkany.anemon.dto.CategoryDto;
 import com.furkany.anemon.dto.CategoryTypeDto;
 import com.furkany.anemon.entities.Category;
 import com.furkany.anemon.entities.CategoryType;
+import com.furkany.anemon.exceptions.ResourceNotFoundEx;
 import com.furkany.anemon.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +27,6 @@ public class CategoryService {
     }
 
     public Category createCategory(CategoryDto categoryDto){
-
         Category category = mapToEntity(categoryDto);
         return categoryRepository.save(category);
     }
@@ -36,23 +37,74 @@ public class CategoryService {
                 .name(categoryDto.getName())
                 .description(categoryDto.getDescription())
                 .build();
+
         if(null != categoryDto.getCategoryTypeList()){
             List<CategoryType> categoryTypes = mapToCategoryTypesList(categoryDto.getCategoryTypeList(),category);
             category.setCategoryTypes(categoryTypes);
         }
-        return category;
+
+        return  category;
     }
 
     private List<CategoryType> mapToCategoryTypesList(List<CategoryTypeDto> categoryTypeList, Category category) {
-
         return categoryTypeList.stream().map(categoryTypeDto -> {
-        CategoryType categoryType = new CategoryType();
-        categoryType.setCode(categoryTypeDto.getCode());
-        categoryType.setName(categoryTypeDto.getName());
-        categoryType.setDescription(categoryTypeDto.getDescription());
-        categoryType.setCategory(category);
-        return categoryType;
+            CategoryType categoryType = new CategoryType();
+            categoryType.setCode(categoryTypeDto.getCode());
+            categoryType.setName(categoryTypeDto.getName());
+            categoryType.setDescription(categoryTypeDto.getDescription());
+            categoryType.setCategory(category);
+            return categoryType;
         }).collect(Collectors.toList());
     }
 
+
+    public List<Category> getAllCategory() {
+        return categoryRepository.findAll();
+    }
+
+    public Category updateCategory(CategoryDto categoryDto, UUID categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(()-> new ResourceNotFoundEx("Category not found with Id "+categoryDto.getId()));
+
+        if(null != categoryDto.getName()){
+            category.setName(categoryDto.getName());
+        }
+        if(null != categoryDto.getCode()){
+            category.setCode(categoryDto.getCode());
+        }
+        if(null != categoryDto.getDescription()){
+            category.setDescription(categoryDto.getDescription());
+        }
+
+        List<CategoryType> existing = category.getCategoryTypes();
+        List<CategoryType> list= new ArrayList<>();
+
+        if(categoryDto.getCategoryTypeList() != null){
+            categoryDto.getCategoryTypeList().forEach(categoryTypeDto -> {
+                if(null != categoryTypeDto.getId()){
+                    Optional<CategoryType> categoryType = existing.stream().filter(t -> t.getId().equals(categoryTypeDto.getId())).findFirst();
+                    CategoryType categoryType1= categoryType.get();
+                    categoryType1.setCode(categoryTypeDto.getCode());
+                    categoryType1.setName(categoryTypeDto.getName());
+                    categoryType1.setDescription(categoryTypeDto.getDescription());
+                    list.add(categoryType1);
+                }
+                else{
+                    CategoryType categoryType = new CategoryType();
+                    categoryType.setCode(categoryTypeDto.getCode());
+                    categoryType.setName(categoryTypeDto.getName());
+                    categoryType.setDescription(categoryTypeDto.getDescription());
+                    categoryType.setCategory(category);
+                    list.add(categoryType);
+                }
+            });
+        }
+        category.setCategoryTypes(list);
+
+        return  categoryRepository.save(category);
+    }
+
+    public void deleteCategory(UUID categoryId) {
+        categoryRepository.deleteById(categoryId);
+    }
 }

@@ -3,7 +3,11 @@ import Anemon from "./Anemon";
 import ProductListPage from "./pages/ProductlistPage/ProductListPage";
 import ShopApplicationWrapper from "./pages/ShopApplicationWrapper";
 import ProductDetail from "./pages/ProductDetailPage/ProductDetail";
-import { loadProductById } from "./routes/products";
+import { loadProductBySlug } from "./routes/products";
+import AuthenticationWrapper from "./pages/AuthenticationWrapper";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import OAuth2LoginCallback from "./pages/OAuth2LoginCallback";
 
 export const router = createBrowserRouter([
     {
@@ -15,18 +19,36 @@ export const router = createBrowserRouter([
                 element:<Anemon />,
             },
             {
-                path:"/takilar",
-                element:<ProductListPage categoryType={'TAKILAR'} />,
+                path:"/taki",
+                element:<ProductListPage categoryType={'TAKI'} />,
             },
             {
                 path:'/giyim',
                 element:<ProductListPage categoryType={'GIYIM'} />,
             },
             {
-                path:"/product/:productId",
-                loader: loadProductById,
+                path:"/product/:slug",
+                loader: loadProductBySlug,
                 element: <ProductDetail />
             }
         ]
+    },
+    {
+        path:"/v1/",
+        element: <AuthenticationWrapper />,
+        children:[
+            {
+                path:"login",
+                element:<Login />
+            },
+            {
+                path:"register",
+                element:<Register />
+            }
+        ]
+    },
+    {
+        path:'/oauth2/callback',
+        element:<OAuth2LoginCallback />
     }
 ]);

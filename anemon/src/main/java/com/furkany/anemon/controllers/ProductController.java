@@ -3,16 +3,21 @@ package com.furkany.anemon.controllers;
 import com.furkany.anemon.dto.ProductDto;
 import com.furkany.anemon.entities.Product;
 import com.furkany.anemon.services.ProductService;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/products")
+@CrossOrigin
 public class ProductController {
 
     private ProductService productService;
@@ -23,15 +28,37 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts(){
-        List<Product> productList = productService.getAllProducts();
+    public ResponseEntity<List<ProductDto>> getAllProducts(@RequestParam(required = false) UUID categoryId, @RequestParam(required = false) UUID typeId, @RequestParam(required = false) String slug, HttpServletResponse response){
+        List<ProductDto> productList = new ArrayList<>();
+        if(StringUtils.isNotBlank(slug)){
+            ProductDto productDto = productService.getProductBySlug(slug);
+            productList.add(productDto);
+        }
+        else {
+            productList = productService.getAllProducts(categoryId, typeId);
+        }
+        response.setHeader("Content-Range",String.valueOf(productList.size()));
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
-    // create Product
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable UUID id){
+        ProductDto productDto = productService.getProductById(id);
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
+    }
+
+    //   create Product
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto){
         Product product = productService.addProduct(productDto);
-        return null;
+        return new ResponseEntity<>(product,HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> updateProduct(@RequestBody ProductDto productDto,@PathVariable UUID id){
+        Product product = productService.updateProduct(productDto,id);
+        return new ResponseEntity<>(product,HttpStatus.OK);
+    }
+
+
 }

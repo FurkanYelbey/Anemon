@@ -105,7 +105,7 @@
         ],
         "copyright":"Copyright © 2025 Anemon"
     },
-    "categories": [
+    "category": [
         {
           "id": 1,
           "name": "Giyim",
@@ -134,12 +134,12 @@
               "description": "Şapka"
             },
             {
-              "id": 14,
+              "id": 5,
               "name": "Elbise",
               "description": "Elbise"
             },
             {
-              "id": 14,
+              "id": 6,
               "name": "Şal",
               "description": "Şal"
             }
@@ -149,33 +149,33 @@
         },
         {
           "id": 2,
-          "name": "Takılar",
-          "code": "TAKILAR",
-          "path":"/takilar",
+          "name": "Takı",
+          "code": "TAKI",
+          "path":"/taki",
           "description":"Takı Çeşitleri",
           "types": [
             {
-              "type_id": 5,
+              "type_id": 7,
               "code":"KOLYE",
               "name": "Kolye"
             },
             {
-              "type_id": 6,
+              "type_id": 8,
               "code":"BİLEKLİK",
               "name": "Bileklik"
             },
             {
-              "type_id": 7,
+              "type_id": 9,
               "code":"BİLEZİK",
               "name": "Bilezik"
             },
             {
-              "type_id": 8,
+              "type_id": 10,
               "code":"KÜPE",
               "name": "Küpe"
             },
             {
-              "type_id": 9,
+              "type_id": 11,
               "code":"SAHMERAN",
               "name": "Şahmeran"
             }
